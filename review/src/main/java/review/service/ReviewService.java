@@ -8,9 +8,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import review.config.ReviewConfig;
 import review.domain.Review;
 import review.dto.ReviewDto;
 import review.dto.ScoreDto;
+import review.exception.ScoreNotAllowedException;
 import review.repository.ReviewRepository;
 
 @Service
@@ -19,6 +21,9 @@ public class ReviewService {
 
 	@Autowired
 	private ReviewRepository reviewRepository;
+
+	@Autowired
+	private ReviewConfig reviewConfig;
 
 	public ReviewDto.Response readReviewsByReviewer(String reviewer) {
 		List<Review> reviews = reviewRepository.findAllByReviewer(reviewer);
@@ -45,6 +50,10 @@ public class ReviewService {
 	}
 
 	public ReviewDto.Response.Review createReview(ReviewDto.Command reviewCommandDto) {
+		if (!reviewConfig.isAllowedScore(reviewCommandDto.score())) {
+			throw new ScoreNotAllowedException();
+		}
+
 		Review review = new Review(
 				reviewCommandDto.reviewee(),
 				reviewCommandDto.reviewer(),

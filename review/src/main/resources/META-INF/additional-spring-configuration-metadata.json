@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "review.scores",
+  "type": "java.lang.List<java.lang.Float>",
+  "description": "Allowed review scores"
+}]}
