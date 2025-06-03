@@ -9,6 +9,7 @@ import review.ApplicationProperties;
 import review.domain.Review;
 import review.dto.ReviewDto;
 import review.dto.ScoreDto;
+import review.exception.AlreadyReviewedException;
 import review.exception.ScoreNotAllowedException;
 import review.repository.ReviewRepository;
 
@@ -43,6 +44,12 @@ public class ReviewService {
   public ReviewDto.Response.Review createReview(ReviewDto.Command reviewCommandDto) {
     if (!applicationProperties.isAllowedScore(reviewCommandDto.score())) {
       throw new ScoreNotAllowedException();
+    }
+
+    if (!reviewRepository
+        .findOneByRevieweeAndReviewer(reviewCommandDto.reviewee(), reviewCommandDto.reviewer())
+        .isEmpty()) {
+      throw new AlreadyReviewedException();
     }
 
     Review review = new Review(reviewCommandDto.reviewee(), reviewCommandDto.reviewer(),

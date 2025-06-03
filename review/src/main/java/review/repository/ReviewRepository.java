@@ -10,6 +10,8 @@ import review.domain.Review;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+  List<Review> findOneByRevieweeAndReviewer(String reviewee, String reviewer);
+
   List<Review> findAllByReviewee(String reviewee);
 
   List<Review> findAllByReviewer(String reviewer);
