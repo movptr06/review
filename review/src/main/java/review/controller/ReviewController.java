@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,8 @@ public class ReviewController {
 
   @GetMapping
   @ResponseBody
-  public ResponseEntity<ReviewDto.Response> readReviews() {
-    String reviewer = "reviewer";
+  public ResponseEntity<ReviewDto.Response> readReviews(
+      @RequestHeader(name = "X-User-Id", required = true) String reviewer) {
 
     ReviewDto.Response reviewResponseDto = reviewService.readReviewsByReviewer(reviewer);
 
@@ -47,9 +48,10 @@ public class ReviewController {
   @ResponseBody
   public ResponseEntity<ReviewDto.Response.Review> createReview(
       @PathVariable("reviewee") String reviewee,
-      @Valid @RequestBody ReviewDto.Request reviewRequestDto) {
+      @Valid @RequestBody ReviewDto.Request reviewRequestDto,
+      @RequestHeader(name = "X-User-Id", required = true) String reviewer) {
 
-    ReviewDto.Command reviewCommandDto = new ReviewDto.Command(reviewee, "reviewer",
+    ReviewDto.Command reviewCommandDto = new ReviewDto.Command(reviewee, reviewer,
         reviewRequestDto.score(), reviewRequestDto.comment());
 
     ReviewDto.Response.Review reviewDto = reviewService.createReview(reviewCommandDto);
@@ -59,8 +61,10 @@ public class ReviewController {
 
   @DeleteMapping("/{reviewee}")
   @ResponseBody
-  public ResponseEntity<Void> deleteReview(@PathVariable("reviewee") String reviewee) {
-    reviewService.deleteReview(reviewee, "reviewer");
+  public ResponseEntity<Void> deleteReview(@PathVariable("reviewee") String reviewee,
+      @RequestHeader(name = "X-User-Id", required = true) String reviewer) {
+
+    reviewService.deleteReview(reviewee, reviewer);
 
     return ResponseEntity.status(HttpStatus.OK).build();
   }
