@@ -59,9 +59,10 @@ public class ReviewService {
   }
 
   public ScoreDto.Response readScore(String reviewee) {
-    Float score = reviewRepository.selectAverageByReviewee(reviewee);
+    Long count = reviewRepository.countByReviewee(reviewee);
+    Float score = reviewRepository.averageByReviewee(reviewee);
 
-    return new ScoreDto.Response(score);
+    return new ScoreDto.Response(count, score);
   }
 
 }

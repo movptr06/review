@@ -16,7 +16,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
   void deleteByRevieweeAndReviewer(String reviewee, String reviewer);
 
+  Long countByReviewee(String reviewee);
+
   @Query("SELECT avg(review.score) FROM Review review WHERE reviewee = :reviewee")
-  Float selectAverageByReviewee(@Param("reviewee") String reviewee);
+  Float averageByReviewee(@Param("reviewee") String reviewee);
 
 }

@@ -2,7 +2,7 @@ package review.dto;
 
 public class ScoreDto {
 
-  public record Response(Float score) {
+  public record Response(Long count, Float score) {
 
   }
 
