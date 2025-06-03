@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
@@ -27,9 +28,12 @@ public class ReviewController {
   @GetMapping
   @ResponseBody
   public ResponseEntity<ReviewDto.Response> readReviews(
-      @RequestHeader(name = "X-User-Id", required = true) String reviewer) {
+      @RequestHeader(name = "X-User-Id", required = true) String reviewer,
+      @RequestParam(name = "cursor", defaultValue = "0") Long cursor,
+      @RequestParam(name = "limit", defaultValue = "256") Long limit) {
 
-    ReviewDto.Response reviewResponseDto = reviewService.readReviewsByReviewer(reviewer);
+    ReviewDto.Response reviewResponseDto =
+        reviewService.readReviewsByReviewer(reviewer, cursor, limit);
 
     return ResponseEntity.status(HttpStatus.OK).body(reviewResponseDto);
   }
@@ -37,9 +41,12 @@ public class ReviewController {
   @GetMapping("/{reviewee}")
   @ResponseBody
   public ResponseEntity<ReviewDto.Response> readReviewsByReviewee(
-      @PathVariable("reviewee") String reviewee) {
+      @PathVariable("reviewee") String reviewee,
+      @RequestParam(name = "cursor", defaultValue = "0") Long cursor,
+      @RequestParam(name = "limit", defaultValue = "256") Long limit) {
 
-    ReviewDto.Response reviewResponseDto = reviewService.readReviewsByReviewee(reviewee);
+    ReviewDto.Response reviewResponseDto =
+        reviewService.readReviewsByReviewee(reviewee, cursor, limit);
 
     return ResponseEntity.status(HttpStatus.OK).body(reviewResponseDto);
   }

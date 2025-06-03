@@ -22,8 +22,8 @@ public class ReviewService {
   @Autowired
   private ReviewRepository reviewRepository;
 
-  public ReviewDto.Response readReviewsByReviewer(String reviewer) {
-    List<Review> reviews = reviewRepository.findAllByReviewer(reviewer);
+  public ReviewDto.Response readReviewsByReviewer(String reviewer, Long cursor, Long limit) {
+    List<Review> reviews = reviewRepository.findPageByReviewer(reviewer, cursor, limit);
 
     return new ReviewDto.Response(reviews.stream()
         .map(review -> new ReviewDto.Response.Review(review.getId(), review.getReviewee(),
@@ -31,8 +31,8 @@ public class ReviewService {
         .collect(Collectors.toList()));
   }
 
-  public ReviewDto.Response readReviewsByReviewee(String reviewee) {
-    List<Review> reviews = reviewRepository.findAllByReviewee(reviewee);
+  public ReviewDto.Response readReviewsByReviewee(String reviewee, Long cursor, Long limit) {
+    List<Review> reviews = reviewRepository.findPageByReviewee(reviewee, cursor, limit);
 
     return new ReviewDto.Response(reviews.stream()
         .map(review -> new ReviewDto.Response.Review(review.getId(), review.getReviewee(),

@@ -14,6 +14,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
   List<Review> findAllByReviewer(String reviewer);
 
+  @Query("""
+      SELECT review FROM Review review WHERE reviewee = :reviewee
+      AND id >= :cursor ORDER BY id ASC LIMIT :limit """)
+  List<Review> findPageByReviewee(@Param("reviewee") String reviewee, @Param("cursor") Long cursor,
+      @Param("limit") Long limit);
+
+  @Query("""
+      SELECT review FROM Review review WHERE reviewer = :reviewer
+      AND id >= :cursor ORDER BY id ASC LIMIT :limit """)
+  List<Review> findPageByReviewer(@Param("reviewer") String reviewer, @Param("cursor") Long cursor,
+      @Param("limit") Long limit);
+
   void deleteByRevieweeAndReviewer(String reviewee, String reviewer);
 
   Long countByReviewee(String reviewee);
